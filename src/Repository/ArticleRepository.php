@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\EntityInterface;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,12 +13,30 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ArticleRepository extends ServiceEntityRepository
+class ArticleRepository extends ServiceEntityRepository implements ArticleRepositoryInterface
 {
+    
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Article::class);
+        
     }
+    
+    public function all(): array {
+        return $this->findAll();
+    }
+    
+    public function save(EntityInterface $article): EntityInterface
+    {
+        $this->getEntityManager()->persist($article);
+        return $article;
+    }
+
+    public function delete(EntityInterface $article): void
+    {
+        $this->getEntityManager()->remove($article);
+    }
+
 
     // /**
     //  * @return Article[] Returns an array of Article objects

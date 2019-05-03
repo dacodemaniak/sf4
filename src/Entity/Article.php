@@ -3,11 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\EntityInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
  */
-class Article
+class Article implements EntityInterface
 {
     /**
      * @ORM\Id()
@@ -30,6 +31,14 @@ class Article
      * @ORM\Column(type="json", nullable=true)
      */
     private $content = [];
+    
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, cascade={"persist"})
+     * 
+     * @var Category
+     */
+    private $category;
+    
 
     public function getId(): ?int
     {
@@ -69,6 +78,16 @@ class Article
     {
         $this->content = $content;
 
+        return $this;
+    }
+    
+    public function getCategory(): ?Category {
+        return $this->category === null ? null : $this->category;
+    }
+    
+    public function setCategory(Category $category): self {
+        $this->category = $category;
+        
         return $this;
     }
 }
